@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SalesTaxCalculator.App")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+560a86ec88bf69e44e231da1fe9b8011e7baee69")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+20df81621a88bcf3330f88b903482e152cf71356")]
 [assembly: System.Reflection.AssemblyProductAttribute("SalesTaxCalculator.App")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SalesTaxCalculator.App")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\SalesTaxCalculator.App\SalesTaxCalculator.App.csproj" />
+    <ProjectReference Include="..\..\src\SalesTaxCalculator.Core\SalesTaxCalculator.Core.csproj" />
   </ItemGroup>
 
 </Project>
