@@ -26,13 +26,30 @@ public class ShoppingBasketParser : IInputParser
             throw new ArgumentNullException(nameof(lines));
 
         var results = new List<(Product Product, int Quantity)>();
+        var lineNumber = 0;
 
         foreach (var line in lines.Where(l => !string.IsNullOrWhiteSpace(l)))
         {
-            var parsed = ParseLine(line.Trim());
-            if (parsed.HasValue)
+            lineNumber++;
+            try
             {
-                results.Add(parsed.Value);
+                var parsed = ParseLine(line.Trim());
+                if (parsed.HasValue)
+                {
+                    results.Add(parsed.Value);
+                }
+                else
+                {
+                    throw new FormatException($"Line {lineNumber}: Invalid format. Expected format: 'quantity product at price'");
+                }
+            }
+            catch (FormatException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new FormatException($"Line {lineNumber}: Failed to parse '{line}'. {ex.Message}", ex);
             }
         }
 
@@ -45,10 +62,14 @@ public class ShoppingBasketParser : IInputParser
         if (!match.Success)
             return null;
 
-        var quantity = int.Parse(match.Groups[1].Value);
+        if (!int.TryParse(match.Groups[1].Value, out var quantity) || quantity <= 0)
+            throw new FormatException($"Invalid quantity: {match.Groups[1].Value}");
+        
         var description = match.Groups[2].Value;
-        var price = decimal.Parse(match.Groups[3].Value);
-
+        
+        if (!decimal.TryParse(match.Groups[3].Value, out var price) || price < 0)
+            throw new FormatException($"Invalid price: {match.Groups[3].Value}");
+        
         var isImported = description.Contains("imported", StringComparison.OrdinalIgnoreCase);
         var category = DetermineCategory(description);
         var name = CleanProductName(description);

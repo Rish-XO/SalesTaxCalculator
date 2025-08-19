@@ -73,4 +73,22 @@ public class MoneyTests
         var product = money1 * 2;
         Assert.Equal(20m, product.Amount);
     }
+
+    [Fact]
+    public void Subtract_WithLargerAmount_ThrowsInvalidOperationException()
+    {
+        var money1 = new Money(5m);
+        var money2 = new Money(10m);
+        
+        var exception = Assert.Throws<InvalidOperationException>(() => money1.Subtract(money2));
+        Assert.Contains("would result in a negative amount", exception.Message);
+    }
+
+    [Fact]
+    public void Multiply_WithNegativeFactor_HandledByConstructor()
+    {
+        var money = new Money(10m);
+        
+        Assert.Throws<ArgumentException>(() => money.Multiply(-2));
+    }
 }

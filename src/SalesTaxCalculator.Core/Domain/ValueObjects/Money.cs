@@ -27,6 +27,9 @@ public class Money : IEquatable<Money>, IComparable<Money>
         if (other == null)
             throw new ArgumentNullException(nameof(other));
         
+        if (_amount < other._amount)
+            throw new InvalidOperationException($"Cannot subtract {other._amount} from {_amount} as it would result in a negative amount");
+        
         return new Money(_amount - other._amount);
     }
 
