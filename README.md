@@ -53,12 +53,33 @@ SalesTaxCalculator/
 ## Getting Started
 
 ### Prerequisites
-- .NET 8 SDK
-- Visual Studio 2022 or VS Code (optional)
+- .NET 8 SDK or later
+- Git
+- Visual Studio 2022, VS Code, or any text editor (optional)
 
-### Building the Solution
+### Clone and Setup
 ```bash
+# Clone the repository
+git clone <repository-url>
+cd SalesTaxCalculator
+
+# Restore NuGet packages
+dotnet restore
+
+# Build the solution
 dotnet build
+```
+
+### Alternative Quick Setup
+**Windows:**
+```batch
+build.bat
+```
+
+**Linux/Mac:**
+```bash
+chmod +x build.sh
+./build.sh
 ```
 
 ### Running Tests
@@ -70,6 +91,21 @@ dotnet test
 ```bash
 dotnet run --project src/SalesTaxCalculator.App
 ```
+
+### Troubleshooting
+
+**Build Fails?**
+1. Ensure .NET 8 SDK is installed: `dotnet --version`
+2. Run `dotnet restore` first
+3. Check all .csproj files are present
+4. Try `dotnet clean` then `dotnet build`
+
+**Missing Project Files?**
+Ensure these files exist:
+- `SalesTaxCalculator.sln`
+- `src/SalesTaxCalculator.App/SalesTaxCalculator.App.csproj`
+- `src/SalesTaxCalculator.Core/SalesTaxCalculator.Core.csproj` 
+- `tests/SalesTaxCalculator.Tests/SalesTaxCalculator.Tests.csproj`
 
 ## Test Cases
 

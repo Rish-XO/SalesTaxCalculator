@@ -1,3 +1,4 @@
+using SalesTaxCalculator.Core.Configuration;
 using SalesTaxCalculator.Core.Domain.Models;
 using SalesTaxCalculator.Core.Domain.ValueObjects;
 using SalesTaxCalculator.Core.Strategies;
@@ -7,10 +8,17 @@ namespace SalesTaxCalculator.Tests.Strategies;
 
 public class TaxStrategyTests
 {
+    private readonly TaxConfiguration _testConfig = new TaxConfiguration
+    {
+        BasicTaxRate = 0.10m,
+        ImportDutyRate = 0.05m,
+        RoundingFactor = 0.05m
+    };
+
     [Fact]
     public void BasicTaxStrategy_AppliesTaxToNonExemptProducts()
     {
-        var strategy = new BasicTaxStrategy(0.10m);
+        var strategy = new BasicTaxStrategy(_testConfig);
         var product = new Product("music CD", new Money(14.99m), ProductCategory.General, false);
         
         var tax = strategy.CalculateTax(product);
@@ -21,7 +29,7 @@ public class TaxStrategyTests
     [Fact]
     public void BasicTaxStrategy_NoTaxForExemptProducts()
     {
-        var strategy = new BasicTaxStrategy(0.10m);
+        var strategy = new BasicTaxStrategy(_testConfig);
         var product = new Product("book", new Money(12.49m), ProductCategory.Book, false);
         
         var tax = strategy.CalculateTax(product);
@@ -32,7 +40,7 @@ public class TaxStrategyTests
     [Fact]
     public void ImportTaxStrategy_AppliesTaxToImportedProducts()
     {
-        var strategy = new ImportTaxStrategy(0.05m);
+        var strategy = new ImportTaxStrategy(_testConfig);
         var product = new Product("imported chocolates", new Money(10.00m), ProductCategory.Food, true);
         
         var tax = strategy.CalculateTax(product);
@@ -43,7 +51,7 @@ public class TaxStrategyTests
     [Fact]
     public void ImportTaxStrategy_NoTaxForDomesticProducts()
     {
-        var strategy = new ImportTaxStrategy(0.05m);
+        var strategy = new ImportTaxStrategy(_testConfig);
         var product = new Product("chocolates", new Money(10.00m), ProductCategory.Food, false);
         
         var tax = strategy.CalculateTax(product);
@@ -54,8 +62,8 @@ public class TaxStrategyTests
     [Fact]
     public void CompositeTaxStrategy_CombinesMultipleStrategies()
     {
-        var basicStrategy = new BasicTaxStrategy(0.10m);
-        var importStrategy = new ImportTaxStrategy(0.05m);
+        var basicStrategy = new BasicTaxStrategy(_testConfig);
+        var importStrategy = new ImportTaxStrategy(_testConfig);
         var compositeStrategy = new CompositeTaxStrategy(basicStrategy, importStrategy);
         
         var product = new Product("imported perfume", new Money(47.50m), ProductCategory.General, true);
@@ -71,7 +79,7 @@ public class TaxStrategyTests
     [InlineData(18.99, 1.90)]
     public void BasicTaxStrategy_RoundsToNearestFiveCents(decimal price, decimal expectedTax)
     {
-        var strategy = new BasicTaxStrategy(0.10m);
+        var strategy = new BasicTaxStrategy(_testConfig);
         var product = new Product("item", new Money(price), ProductCategory.General, false);
         
         var tax = strategy.CalculateTax(product);

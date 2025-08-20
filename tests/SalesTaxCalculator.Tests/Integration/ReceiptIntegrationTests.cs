@@ -1,3 +1,4 @@
+using SalesTaxCalculator.Core.Configuration;
 using SalesTaxCalculator.Core.Domain.Models;
 using SalesTaxCalculator.Core.Domain.ValueObjects;
 using SalesTaxCalculator.Core.Formatters;
@@ -16,13 +17,23 @@ public class ReceiptIntegrationTests
 
     public ReceiptIntegrationTests()
     {
-        var basicTaxStrategy = new BasicTaxStrategy(0.10m);
-        var importTaxStrategy = new ImportTaxStrategy(0.05m);
+        var taxConfig = new TaxConfiguration
+        {
+            BasicTaxRate = 0.10m,
+            ImportDutyRate = 0.05m,
+            RoundingFactor = 0.05m
+        };
+
+        var categoryService = new ProductCategoryService();
+        var productFactory = new ProductFactory(categoryService);
+        
+        var basicTaxStrategy = new BasicTaxStrategy(taxConfig);
+        var importTaxStrategy = new ImportTaxStrategy(taxConfig);
         var compositeTaxStrategy = new CompositeTaxStrategy(basicTaxStrategy, importTaxStrategy);
         var taxCalculator = new TaxCalculator(compositeTaxStrategy);
         
         _receiptService = new ReceiptService(taxCalculator);
-        _parser = new ShoppingBasketParser();
+        _parser = new ShoppingBasketParser(productFactory);
         _formatter = new ConsoleReceiptFormatter();
     }
 
