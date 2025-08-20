@@ -3,6 +3,12 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+# IMPORTANT: Always include these essential files
+!*.sln
+!*.csproj
+!*.cs
+!README.md
+
 # dotenv files
 .env
 
