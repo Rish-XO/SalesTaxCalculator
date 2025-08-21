@@ -29,6 +29,6 @@ public class LineItem
 
     public override string ToString()
     {
-        return $"{Quantity} {GetFormattedName()}: {PriceWithTax:F2}";
+        return $"{Quantity} {GetFormattedName()}: {TotalPrice:F2}";
     }
 }

@@ -33,49 +33,44 @@ class Program
         var parser = new ShoppingBasketParser(productFactory);
         var formatter = new ConsoleReceiptFormatter();
 
-        var testCases = new Dictionary<string, string[]>
+        Console.WriteLine("=== Sales Tax Calculator ===");
+        Console.WriteLine();
+        Console.WriteLine("Enter your shopping items (format: 'quantity item at price')");
+        Console.WriteLine("Examples:");
+        Console.WriteLine("  1 book at 12.49");
+        Console.WriteLine("  2 imported chocolate bars at 5.00");
+        Console.WriteLine("  1 packet of headache pills at 9.75");
+        Console.WriteLine();
+        Console.WriteLine("Press Enter on an empty line when finished:");
+        Console.WriteLine();
+        
+        var userItems = new List<string>();
+        string line;
+        
+        while (!string.IsNullOrWhiteSpace(line = Console.ReadLine()))
         {
-            {
-                "Input 1", new[]
-                {
-                    "1 book at 12.49",
-                    "1 music CD at 14.99",
-                    "1 chocolate bar at 0.85"
-                }
-            },
-            {
-                "Input 2", new[]
-                {
-                    "1 imported box of chocolates at 10.00",
-                    "1 imported bottle of perfume at 47.50"
-                }
-            },
-            {
-                "Input 3", new[]
-                {
-                    "1 imported bottle of perfume at 27.99",
-                    "1 bottle of perfume at 18.99",
-                    "1 packet of headache pills at 9.75",
-                    "1 box of imported chocolates at 11.25"
-                }
-            }
-        };
-
-        foreach (var testCase in testCases)
+            userItems.Add(line.Trim());
+        }
+        
+        if (userItems.Count == 0)
         {
-            Console.WriteLine($"\n{testCase.Key}:");
-            foreach (var line in testCase.Value)
-            {
-                Console.WriteLine(line);
-            }
-
-            Console.WriteLine($"\nOutput {testCase.Key.Replace("Input", "")}:");
-            
-            var items = parser.ParseShoppingBasket(testCase.Value);
+            Console.WriteLine("No items entered. Goodbye!");
+            return;
+        }
+        
+        try
+        {
+            Console.WriteLine("\n=== Your Receipt ===");
+            var items = parser.ParseShoppingBasket(userItems.ToArray());
             var receipt = receiptService.GenerateReceipt(items);
             var output = formatter.Format(receipt);
             
             Console.Write(output);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error processing your input: {ex.Message}");
+            Console.WriteLine("Please check the format and try again.");
         }
 
         Console.WriteLine("\nPress any key to exit...");
