@@ -9,7 +9,8 @@ public class Money : IEquatable<Money>, IComparable<Money>
         if (amount < 0)
             throw new ArgumentException("Amount cannot be negative", nameof(amount));
         
-        _amount = Math.Round(amount, 2);
+        // Store with higher precision to allow proper rounding calculations
+        _amount = Math.Round(amount, 4);
     }
 
     public decimal Amount => _amount;
@@ -43,8 +44,16 @@ public class Money : IEquatable<Money>, IComparable<Money>
         if (nearest <= 0)
             throw new ArgumentException("Rounding value must be positive", nameof(nearest));
         
-        var rounded = Math.Ceiling(_amount / nearest) * nearest;
-        return new Money(rounded);
+        if (_amount == 0)
+            return Money.Zero;
+            
+        // Debug: Let's see what's actually happening
+        var quotient = _amount / nearest;
+        var ceilingResult = Math.Ceiling(quotient);
+        var finalResult = ceilingResult * nearest;
+        
+        // Force precise calculation by avoiding the Money constructor's rounding
+        return new Money(Math.Round(finalResult, 4));
     }
 
     public static Money Zero => new Money(0);
